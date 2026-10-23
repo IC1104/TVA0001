@@ -92,7 +92,7 @@ private fun Wallpaper() {
         // Android Studio's Preview can't show the 4K layer.
         Box(Modifier.fillMaxSize().background(WallpaperDeep))
     } else {
-        AndroidView(factory = ::SunsetWallpaperView, modifier = Modifier.fillMaxSize())
+        AndroidView(factory = { Wallpaper4KView(it, ActiveWallpaper) }, modifier = Modifier.fillMaxSize())
     }
     // Darkens the top and bottom so text and tiles stay readable on any picture.
     Box(

@@ -17,14 +17,18 @@ import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
 
+/** The wallpapers TVA can draw. Each one is drawn in code, so it's sharp at 4K. */
+enum class WallpaperScene { Sunset, SpaceCowboy }
+
 /**
- * The synthwave sunset wallpaper, drawn in code.
+ * A wallpaper on its own full-resolution layer.
  *
  * The TV draws app screens at 1920x1080 and stretches them to the 4K panel.
  * A SurfaceView is its own layer, so we can ask for a full 3840x2160 buffer
- * and the sunset stays sharp while the tiles and text sit on top.
+ * and the wallpaper stays sharp while the tiles and text sit on top.
  */
-class SunsetWallpaperView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
+class Wallpaper4KView(context: Context, private val scene: WallpaperScene) :
+    SurfaceView(context), SurfaceHolder.Callback {
 
     init {
         holder.setFormat(PixelFormat.RGBA_8888)
@@ -38,7 +42,10 @@ class SunsetWallpaperView(context: Context) : SurfaceView(context), SurfaceHolde
         // A still picture, so drawing it once is enough.
         val canvas = holder.lockCanvas() ?: return
         try {
-            drawSunset(canvas, width.toFloat(), height.toFloat())
+            when (scene) {
+                WallpaperScene.Sunset -> drawSunset(canvas, width.toFloat(), height.toFloat())
+                WallpaperScene.SpaceCowboy -> drawSpaceCowboy(context, canvas, width.toFloat(), height.toFloat())
+            }
         } finally {
             holder.unlockCanvasAndPost(canvas)
         }
@@ -52,7 +59,7 @@ class SunsetWallpaperView(context: Context) : SurfaceView(context), SurfaceHolde
     }
 }
 
-private fun color(hex: Long) = hex.toInt()
+internal fun color(hex: Long) = hex.toInt()
 
 private fun drawSunset(canvas: Canvas, w: Float, h: Float) {
     val horizon = h * 0.63f

@@ -31,7 +31,9 @@ data class Tile(
     val symbol: Symbol = Symbol.Play,
 )
 
-// The home screen layout. Change labels, colors or order here.
+// The home screen layout. Change the wallpaper, labels, colors or order here.
+val ActiveWallpaper = WallpaperScene.SpaceCowboy
+
 val BigTile = Tile("HDMI 3", TileTeal, TileAction.HdmiInput(3), Symbol.Hdmi)
 
 val TopRow = listOf(
