@@ -9,6 +9,18 @@
         android:name="android.software.leanback"
         android:required="false" />
 
+    <!-- Android 11+ hides other apps unless we say which ones we want to see. -->
+    <queries>
+        <!-- Every TV app, for the "All apps" screen. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+        <package android:name="com.google.android.youtube.tv" />
+        <package android:name="com.amazon.amazonvideo.livingroom" />
+        <package android:name="com.apple.atve.androidtv.appletv" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:banner="@mipmap/ic_launcher"
@@ -18,7 +30,17 @@
         android:theme="@style/Theme.TVA0001">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true">
+            <!-- Lets Android offer this app as the home screen. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- Keeps it in the app list so Android Studio can start it. -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

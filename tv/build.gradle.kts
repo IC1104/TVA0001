@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.tva0001"
-        minSdk = 36
+        minSdk = 31
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
