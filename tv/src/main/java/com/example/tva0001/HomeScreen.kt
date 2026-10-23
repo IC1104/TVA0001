@@ -192,19 +192,19 @@ private fun TileButton(
                 TileShape,
             )
             .clickable(interactionSource = interaction, indication = null, onClick = onClick)
-            .padding(14.dp),
+            .padding(12.dp),
         contentAlignment = if (big) Alignment.BottomStart else Alignment.Center,
     ) {
         if (big) {
             Column {
-                TileIcon(tile, 44.dp)
+                TileIcon(tile, 56.dp)
                 Spacer(Modifier.height(12.dp))
                 BasicText("Watch", style = TextStyle(color = TileTealText, fontSize = 13.sp))
                 BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 24.sp))
             }
         } else {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                TileIcon(tile, 28.dp)
+                TileIcon(tile, 40.dp)
                 Spacer(Modifier.height(6.dp))
                 BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 16.sp))
             }
@@ -212,14 +212,18 @@ private fun TileButton(
     }
 }
 
-/** The app's own logo if it's installed, otherwise the tile's white symbol. */
+/** The tile's space icon, or for All apps the app's own logo (a play symbol if missing). */
 @Composable
 private fun TileIcon(tile: Tile, size: Dp) {
+    if (tile.icon != null) {
+        SpaceIconView(tile.icon, size)
+        return
+    }
     val logo = (tile.action as? TileAction.OpenApp)?.let { rememberAppLogo(it.packageName) }
     if (logo != null) {
         Image(logo, contentDescription = null, modifier = Modifier.size(size))
     } else {
-        SymbolIcon(tile.symbol, size, TextBright)
+        SymbolIcon(Symbol.Play, size, TextBright)
     }
 }
 

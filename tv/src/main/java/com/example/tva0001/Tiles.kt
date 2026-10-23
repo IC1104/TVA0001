@@ -27,26 +27,26 @@ data class Tile(
     val label: String,
     val color: Color,
     val action: TileAction,
-    // Shown when there's no app logo to use.
-    val symbol: Symbol = Symbol.Play,
+    // The home screen's own icon; without one, the app's logo is shown.
+    val icon: SpaceIcon? = null,
 )
 
 // The home screen layout. Change the wallpaper, labels, colors or order here.
 val ActiveWallpaper = WallpaperScene.SpaceCowboy
 
-val BigTile = Tile("HDMI 3", TileTeal, TileAction.HdmiInput(3), Symbol.Hdmi)
+val BigTile = Tile("HDMI 3", TileTeal, TileAction.HdmiInput(3), SpaceIcon.Rocket)
 
 val TopRow = listOf(
-    Tile("YouTube", TileCoral, TileAction.OpenApp("com.google.android.youtube.tv")),
-    Tile("Prime Video", TilePurple, TileAction.OpenApp("com.amazon.amazonvideo.livingroom")),
-    Tile("Apple TV", TileGreen, TileAction.OpenApp("com.apple.atve.androidtv.appletv")),
+    Tile("YouTube", TileCoral, TileAction.OpenApp("com.google.android.youtube.tv"), SpaceIcon.RetroTv),
+    Tile("Prime Video", TilePurple, TileAction.OpenApp("com.amazon.amazonvideo.livingroom"), SpaceIcon.Comet),
+    Tile("Apple TV", TileGreen, TileAction.OpenApp("com.apple.atve.androidtv.appletv"), SpaceIcon.Sparkle),
 )
 
 val BottomRow = listOf(
-    Tile("HDMI 2", TileDark, TileAction.HdmiInput(2), Symbol.Hdmi),
-    Tile("HDMI 1", TileDark, TileAction.HdmiInput(1), Symbol.Hdmi),
-    Tile("All apps", TileDark, TileAction.AllApps, Symbol.Apps),
-    Tile("Settings", TileDark, TileAction.Settings, Symbol.Settings),
+    Tile("HDMI 2", TileDark, TileAction.HdmiInput(2), SpaceIcon.Planet),
+    Tile("HDMI 1", TileDark, TileAction.HdmiInput(1), SpaceIcon.Crescent),
+    Tile("All apps", TileDark, TileAction.AllApps, SpaceIcon.Constellation),
+    Tile("Settings", TileDark, TileAction.Settings, SpaceIcon.GearOrbit),
 )
 
 /** Opens an installed app, or explains why it can't. */

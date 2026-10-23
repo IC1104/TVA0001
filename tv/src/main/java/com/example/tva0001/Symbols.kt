@@ -19,12 +19,12 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 
-/** The simple white symbols for tiles without an app logo, and for the weather. */
-enum class Symbol { Play, Hdmi, Apps, Settings, Sun, Moon, Cloud, Rain, Snow, Storm, Fog }
+/** Simple white symbols: a fallback for missing app logos, and the weather. */
+enum class Symbol { Play, Sun, Moon, Cloud, Rain, Snow, Storm, Fog }
 
 @Composable
 fun SymbolIcon(symbol: Symbol, size: Dp, color: Color) {
-    // Offscreen so the gear's hole and the moon's curve can be cut out.
+    // Offscreen so the moon's curve can be cut out.
     Canvas(Modifier.size(size).graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }) {
         val w = this.size.width
         val line = Stroke(width = w * 0.07f, join = StrokeJoin.Round)
@@ -38,46 +38,6 @@ fun SymbolIcon(symbol: Symbol, size: Dp, color: Color) {
                 }
                 drawPath(triangle, color, style = Stroke(width = w * 0.08f, join = StrokeJoin.Round))
                 drawPath(triangle, color)
-            }
-            Symbol.Hdmi -> {
-                // The outline of an HDMI plug, with its inner contact strip.
-                val plug = Path().apply {
-                    moveTo(w * 0.08f, w * 0.3f)
-                    lineTo(w * 0.92f, w * 0.3f)
-                    lineTo(w * 0.92f, w * 0.55f)
-                    lineTo(w * 0.76f, w * 0.72f)
-                    lineTo(w * 0.24f, w * 0.72f)
-                    lineTo(w * 0.08f, w * 0.55f)
-                    close()
-                }
-                drawPath(plug, color, style = line)
-                drawLine(color, Offset(w * 0.28f, w * 0.46f), Offset(w * 0.72f, w * 0.46f), strokeWidth = w * 0.07f)
-            }
-            Symbol.Apps -> {
-                val dot = w * 0.16f
-                for (row in 0..2) for (col in 0..2) {
-                    drawRoundRect(
-                        color,
-                        topLeft = Offset(w * (0.14f + col * 0.29f), w * (0.14f + row * 0.29f)),
-                        size = Size(dot, dot),
-                        cornerRadius = CornerRadius(dot * 0.3f),
-                    )
-                }
-            }
-            Symbol.Settings -> {
-                val tooth = Size(w * 0.16f, w * 0.2f)
-                repeat(8) { i ->
-                    rotate(i * 45f) {
-                        drawRoundRect(
-                            color,
-                            topLeft = Offset(center.x - tooth.width / 2, w * 0.06f),
-                            size = tooth,
-                            cornerRadius = CornerRadius(w * 0.03f),
-                        )
-                    }
-                }
-                drawCircle(color, radius = w * 0.3f)
-                drawCircle(Color.Black, radius = w * 0.12f, blendMode = BlendMode.Clear)
             }
             Symbol.Sun -> {
                 drawCircle(color, radius = w * 0.2f)
