@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,11 +38,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -181,33 +184,80 @@ private fun TileButton(
 ) {
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
+    val subtitle = rememberSubtitle(tile)
     Box(
         modifier
             .graphicsLayer { scaleX = if (focused) 1.05f else 1f; scaleY = scaleX }
-            // Glass: a dark see-through tile that only shows its color when selected.
-            .background(if (focused) tile.color.copy(alpha = 0.9f) else GlassFill, TileShape)
+            // Glass with a glow of the tile's own color; fully colored when selected.
+            .background(
+                if (focused) {
+                    SolidColor(tile.color.copy(alpha = 0.9f))
+                } else {
+                    Brush.verticalGradient(listOf(GlassFill, tile.color.copy(alpha = 0.35f)))
+                },
+                TileShape,
+            )
             .border(
                 if (focused) 3.dp else 1.dp,
                 if (focused) FocusRing else GlassEdge,
                 TileShape,
             )
-            .clickable(interactionSource = interaction, indication = null, onClick = onClick)
-            .padding(12.dp),
-        contentAlignment = if (big) Alignment.BottomStart else Alignment.Center,
+            .clip(TileShape)
+            .clickable(interactionSource = interaction, indication = null, onClick = onClick),
     ) {
-        if (big) {
-            Column {
-                TileIcon(tile, 56.dp)
-                Spacer(Modifier.height(12.dp))
-                BasicText("Watch", style = TextStyle(color = TileTealText, fontSize = 13.sp))
-                BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 24.sp))
-            }
-        } else {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        if (tile.icon == null) {
+            // All apps panel: the app's logo and name, centered.
+            Column(
+                Modifier.align(Alignment.Center).padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 TileIcon(tile, 40.dp)
                 Spacer(Modifier.height(6.dp))
                 BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 16.sp))
             }
+            return@Box
+        }
+
+        // A giant faint copy of the icon, spilling off the bottom-right corner.
+        val watermark = if (big) 230.dp else 104.dp
+        Box(
+            Modifier
+                .align(Alignment.BottomEnd)
+                .offset(x = watermark * 0.22f, y = watermark * 0.22f)
+                .graphicsLayer { alpha = if (focused) 0.22f else 0.13f }
+        ) {
+            SpaceIconView(tile.icon, watermark)
+        }
+
+        Column(
+            Modifier.fillMaxSize().padding(if (big) 18.dp else 12.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            TileIcon(tile, if (big) 64.dp else 30.dp)
+            Column {
+                if (big) BasicText("Watch", style = TextStyle(color = TileTealText, fontSize = 13.sp))
+                BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = if (big) 28.sp else 16.sp))
+                if (subtitle.isNotEmpty()) {
+                    BasicText(
+                        subtitle,
+                        style = TextStyle(color = TextSoft, fontSize = if (big) 16.sp else 12.sp),
+                        maxLines = 1,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** The tile's second line: what's plugged in for HDMI, the app count for All apps. */
+@Composable
+private fun rememberSubtitle(tile: Tile): String {
+    val context = LocalContext.current
+    return remember(tile) {
+        when (val action = tile.action) {
+            is TileAction.HdmiInput -> hdmiDeviceName(context, action.number) ?: "Not on this TV"
+            TileAction.AllApps -> "${installedTvApps(context).size} apps"
+            else -> tile.subtitle
         }
     }
 }

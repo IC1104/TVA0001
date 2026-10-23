@@ -26,6 +26,10 @@ val TilePurple = Color(0xFF534AB7)
 val TileCoral = Color(0xFF993C1D)
 val TileGreen = Color(0xFF3B6D11)
 val TileDark = Color(0xFF1D1D1F)
+val TileViolet = Color(0xFF6A1FB0)
+val TileCyan = Color(0xFF0F6E86)
+val TilePink = Color(0xFF993556)
+val TileSlate = Color(0xFF444441)
 val FocusRing = Color(0xFFF1EFE8)
 
 // Glass tiles
