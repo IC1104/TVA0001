@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,9 +37,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +54,6 @@ import com.example.tva0001.ui.theme.TextSoft
 import com.example.tva0001.ui.theme.TileDark
 import com.example.tva0001.ui.theme.TileTealText
 import com.example.tva0001.ui.theme.WallpaperDeep
-import com.example.tva0001.ui.theme.WallpaperLight
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -78,17 +79,23 @@ fun HomeScreen() {
 
 @Composable
 private fun Wallpaper() {
-    Canvas(Modifier.fillMaxSize()) {
-        drawRect(WallpaperDeep)
-        val slant = Path().apply {
-            moveTo(size.width * 0.55f, 0f)
-            lineTo(size.width, 0f)
-            lineTo(size.width, size.height)
-            lineTo(size.width * 0.30f, size.height)
-            close()
-        }
-        drawPath(slant, WallpaperLight)
-    }
+    Image(
+        painter = painterResource(R.drawable.wallpaper),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize().background(WallpaperDeep),
+    )
+    // Darkens the top and bottom so text and tiles stay readable on any picture.
+    Box(
+        Modifier.fillMaxSize().background(
+            Brush.verticalGradient(
+                0f to Color.Black.copy(alpha = 0.35f),
+                0.3f to Color.Transparent,
+                0.5f to Color.Transparent,
+                1f to Color.Black.copy(alpha = 0.75f),
+            )
+        )
+    )
 }
 
 @Composable
