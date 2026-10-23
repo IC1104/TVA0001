@@ -64,7 +64,6 @@ import com.example.tva0001.ui.theme.TextBright
 import com.example.tva0001.ui.theme.TextFaint
 import com.example.tva0001.ui.theme.TextSoft
 import com.example.tva0001.ui.theme.TileDark
-import com.example.tva0001.ui.theme.TileTealText
 import com.example.tva0001.ui.theme.WallpaperDeep
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
@@ -235,7 +234,6 @@ private fun TileButton(
         ) {
             TileIcon(tile, if (big) 64.dp else 30.dp)
             Column {
-                if (big) BasicText("Watch", style = TextStyle(color = TileTealText, fontSize = 13.sp))
                 BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = if (big) 28.sp else 16.sp))
                 if (subtitle.isNotEmpty()) {
                     BasicText(

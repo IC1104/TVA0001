@@ -39,7 +39,7 @@ data class Tile(
 // The home screen layout. Change the wallpaper, labels, colors or order here.
 val ActiveWallpaper = WallpaperScene.SpaceCowboy
 
-val BigTile = Tile("PS5 Pro", TileTeal, TileAction.HdmiInput(3), SpaceIcon.Rocket, "HDMI 3")
+val BigTile = Tile("PS5 Pro", TileTeal, TileAction.HdmiInput(3), SpaceIcon.Rocket, "Power to the Players")
 
 val TopRow = listOf(
     Tile("YouTube", TileCoral, TileAction.OpenApp("com.google.android.youtube.tv"), SpaceIcon.RetroTv, "Videos and music"),

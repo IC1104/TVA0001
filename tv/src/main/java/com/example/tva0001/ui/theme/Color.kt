@@ -21,7 +21,6 @@ val TextFaint = Color(0xFFAFA9EC)
 
 // Tiles
 val TileTeal = Color(0xFF085041)
-val TileTealText = Color(0xFF9FE1CB)
 val TilePurple = Color(0xFF534AB7)
 val TileCoral = Color(0xFF993C1D)
 val TileGreen = Color(0xFF3B6D11)
