@@ -32,14 +32,14 @@ data class Tile(
     val action: TileAction,
     // The home screen's own icon; without one, the app's logo is shown.
     val icon: SpaceIcon? = null,
-    // The small second line. HDMI tiles show what's plugged in instead.
+    // The small second line under the name.
     val subtitle: String = "",
 )
 
 // The home screen layout. Change the wallpaper, labels, colors or order here.
 val ActiveWallpaper = WallpaperScene.SpaceCowboy
 
-val BigTile = Tile("HDMI 3", TileTeal, TileAction.HdmiInput(3), SpaceIcon.Rocket)
+val BigTile = Tile("PS5 Pro", TileTeal, TileAction.HdmiInput(3), SpaceIcon.Rocket, "HDMI 3")
 
 val TopRow = listOf(
     Tile("YouTube", TileCoral, TileAction.OpenApp("com.google.android.youtube.tv"), SpaceIcon.RetroTv, "Videos and music"),
@@ -48,8 +48,8 @@ val TopRow = listOf(
 )
 
 val BottomRow = listOf(
-    Tile("HDMI 2", TileViolet, TileAction.HdmiInput(2), SpaceIcon.Planet),
-    Tile("HDMI 1", TileCyan, TileAction.HdmiInput(1), SpaceIcon.Crescent),
+    Tile("PC", TileViolet, TileAction.HdmiInput(2), SpaceIcon.Planet, "HDMI 2"),
+    Tile("AUX", TileCyan, TileAction.HdmiInput(1), SpaceIcon.Crescent, "HDMI 1"),
     Tile("All apps", TilePink, TileAction.AllApps, SpaceIcon.Constellation),
     Tile("Settings", TileSlate, TileAction.Settings, SpaceIcon.GearOrbit, "Picture, sound, Wi-Fi"),
 )
@@ -89,23 +89,11 @@ fun openHdmi(context: Context, number: Int) {
     startSafely(context, intent, "HDMI $number")
 }
 
-/**
- * What's plugged into an HDMI port, e.g. "PlayStation 5", as the device
- * announces itself to the TV. Null if the TV has no such port.
- */
-fun hdmiDeviceName(context: Context, number: Int): String? {
-    val all = tvInputList(context)
-    val port = findPort(context, hdmiPorts(context), number) ?: return null
-    val device = all.firstOrNull { it.parentId == port.id }
-    return device?.loadLabel(context)?.toString() ?: "Nothing plugged in"
-}
-
-private fun tvInputList(context: Context): List<TvInputInfo> =
-    (context.getSystemService(Context.TV_INPUT_SERVICE) as? TvInputManager)?.tvInputList.orEmpty()
-
 // Top-level HDMI ports only; devices plugged into a port show up as children.
 private fun hdmiPorts(context: Context): List<TvInputInfo> =
-    tvInputList(context).filter { it.type == TvInputInfo.TYPE_HDMI && it.parentId == null }
+    (context.getSystemService(Context.TV_INPUT_SERVICE) as? TvInputManager)?.tvInputList
+        ?.filter { it.type == TvInputInfo.TYPE_HDMI && it.parentId == null }
+        .orEmpty()
 
 // Prefer the port whose name mentions the number (e.g. "HDMI 3"),
 // otherwise fall back to the nth port.

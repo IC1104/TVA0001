@@ -249,13 +249,12 @@ private fun TileButton(
     }
 }
 
-/** The tile's second line: what's plugged in for HDMI, the app count for All apps. */
+/** The tile's second line; All apps counts the installed apps. */
 @Composable
 private fun rememberSubtitle(tile: Tile): String {
     val context = LocalContext.current
     return remember(tile) {
-        when (val action = tile.action) {
-            is TileAction.HdmiInput -> hdmiDeviceName(context, action.number) ?: "Not on this TV"
+        when (tile.action) {
             TileAction.AllApps -> "${installedTvApps(context).size} apps"
             else -> tile.subtitle
         }
