@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -110,6 +111,7 @@ private fun Wallpaper() {
 private fun HomeContent(onAllApps: () -> Unit) {
     val context = LocalContext.current
     val now = rememberMinuteClock()
+    val weather by rememberWeather()
     val bigTileFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) { bigTileFocus.requestFocus() }
 
@@ -130,10 +132,18 @@ private fun HomeContent(onAllApps: () -> Unit) {
                     style = TextStyle(color = TextBright, fontSize = 32.sp),
                 )
             }
-            BasicText(
-                now.format(clockFormat(context)),
-                style = TextStyle(color = TextSoft, fontSize = 20.sp),
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                BasicText(
+                    now.format(clockFormat(context)),
+                    style = TextStyle(color = TextSoft, fontSize = 20.sp),
+                )
+                weather?.let {
+                    Spacer(Modifier.width(20.dp))
+                    SymbolIcon(it.symbol, 24.dp, TextSoft)
+                    Spacer(Modifier.width(6.dp))
+                    BasicText("${it.degrees}°", style = TextStyle(color = TextSoft, fontSize = 20.sp))
+                }
+            }
         }
 
         Spacer(Modifier.weight(1f))
