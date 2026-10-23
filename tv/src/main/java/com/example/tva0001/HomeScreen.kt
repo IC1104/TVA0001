@@ -48,6 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tva0001.ui.theme.FocusRing
+import com.example.tva0001.ui.theme.GlassEdge
+import com.example.tva0001.ui.theme.GlassFill
 import com.example.tva0001.ui.theme.TextBright
 import com.example.tva0001.ui.theme.TextFaint
 import com.example.tva0001.ui.theme.TextSoft
@@ -166,8 +168,13 @@ private fun TileButton(
     Box(
         modifier
             .graphicsLayer { scaleX = if (focused) 1.05f else 1f; scaleY = scaleX }
-            .border(3.dp, if (focused) FocusRing else Color.Transparent, TileShape)
-            .background(tile.color, TileShape)
+            // Glass: a dark see-through tile that only shows its color when selected.
+            .background(if (focused) tile.color.copy(alpha = 0.9f) else GlassFill, TileShape)
+            .border(
+                if (focused) 3.dp else 1.dp,
+                if (focused) FocusRing else GlassEdge,
+                TileShape,
+            )
             .clickable(interactionSource = interaction, indication = null, onClick = onClick)
             .padding(14.dp),
         contentAlignment = if (big) Alignment.BottomStart else Alignment.Center,
