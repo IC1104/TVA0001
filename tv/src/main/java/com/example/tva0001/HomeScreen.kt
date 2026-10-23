@@ -44,15 +44,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.drawable.toBitmap
 import com.example.tva0001.ui.theme.FocusRing
 import com.example.tva0001.ui.theme.GlassEdge
@@ -88,12 +88,12 @@ fun HomeScreen() {
 
 @Composable
 private fun Wallpaper() {
-    Image(
-        painter = painterResource(R.drawable.wallpaper),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize().background(WallpaperDeep),
-    )
+    if (LocalInspectionMode.current) {
+        // Android Studio's Preview can't show the 4K layer.
+        Box(Modifier.fillMaxSize().background(WallpaperDeep))
+    } else {
+        AndroidView(factory = ::SunsetWallpaperView, modifier = Modifier.fillMaxSize())
+    }
     // Darkens the top and bottom so text and tiles stay readable on any picture.
     Box(
         Modifier.fillMaxSize().background(
