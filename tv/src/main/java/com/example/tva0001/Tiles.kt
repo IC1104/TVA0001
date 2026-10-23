@@ -23,10 +23,16 @@ sealed interface TileAction {
     data object Settings : TileAction
 }
 
-data class Tile(val label: String, val color: Color, val action: TileAction)
+data class Tile(
+    val label: String,
+    val color: Color,
+    val action: TileAction,
+    // Shown when there's no app logo to use.
+    val symbol: Symbol = Symbol.Play,
+)
 
 // The home screen layout. Change labels, colors or order here.
-val BigTile = Tile("HDMI 3", TileTeal, TileAction.HdmiInput(3))
+val BigTile = Tile("HDMI 3", TileTeal, TileAction.HdmiInput(3), Symbol.Hdmi)
 
 val TopRow = listOf(
     Tile("YouTube", TileCoral, TileAction.OpenApp("com.google.android.youtube.tv")),
@@ -35,10 +41,10 @@ val TopRow = listOf(
 )
 
 val BottomRow = listOf(
-    Tile("HDMI 2", TileDark, TileAction.HdmiInput(2)),
-    Tile("HDMI 1", TileDark, TileAction.HdmiInput(1)),
-    Tile("All apps", TileDark, TileAction.AllApps),
-    Tile("Settings", TileDark, TileAction.Settings),
+    Tile("HDMI 2", TileDark, TileAction.HdmiInput(2), Symbol.Hdmi),
+    Tile("HDMI 1", TileDark, TileAction.HdmiInput(1), Symbol.Hdmi),
+    Tile("All apps", TileDark, TileAction.AllApps, Symbol.Apps),
+    Tile("Settings", TileDark, TileAction.Settings, Symbol.Settings),
 )
 
 /** Opens an installed app, or explains why it can't. */

@@ -2,6 +2,7 @@ package com.example.tva0001
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.text.format.DateFormat
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -36,8 +38,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -45,8 +49,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import com.example.tva0001.ui.theme.FocusRing
 import com.example.tva0001.ui.theme.GlassEdge
 import com.example.tva0001.ui.theme.GlassFill
@@ -181,11 +187,40 @@ private fun TileButton(
     ) {
         if (big) {
             Column {
+                TileIcon(tile, 44.dp)
+                Spacer(Modifier.height(12.dp))
                 BasicText("Watch", style = TextStyle(color = TileTealText, fontSize = 13.sp))
                 BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 24.sp))
             }
         } else {
-            BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 16.sp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                TileIcon(tile, 28.dp)
+                Spacer(Modifier.height(6.dp))
+                BasicText(tile.label, style = TextStyle(color = TextBright, fontSize = 16.sp))
+            }
+        }
+    }
+}
+
+/** The app's own logo if it's installed, otherwise the tile's white symbol. */
+@Composable
+private fun TileIcon(tile: Tile, size: Dp) {
+    val logo = (tile.action as? TileAction.OpenApp)?.let { rememberAppLogo(it.packageName) }
+    if (logo != null) {
+        Image(logo, contentDescription = null, modifier = Modifier.size(size))
+    } else {
+        SymbolIcon(tile.symbol, size, TextBright)
+    }
+}
+
+@Composable
+private fun rememberAppLogo(packageName: String): ImageBitmap? {
+    val context = LocalContext.current
+    return remember(packageName) {
+        try {
+            context.packageManager.getApplicationIcon(packageName).toBitmap(128, 128).asImageBitmap()
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
         }
     }
 }
@@ -214,7 +249,7 @@ private fun AllAppsPanel() {
                 val first = app == apps.first()
                 TileButton(
                     tile = Tile(app.label, TileDark, TileAction.OpenApp(app.packageName)),
-                    modifier = Modifier.height(80.dp).then(if (first) Modifier.focusRequester(firstFocus) else Modifier),
+                    modifier = Modifier.height(110.dp).then(if (first) Modifier.focusRequester(firstFocus) else Modifier),
                     onClick = { openApp(context, app.packageName, app.label) },
                 )
             }
